@@ -41,6 +41,7 @@ function love.update(dt)
     background_x = (background_x + BACKGROUND_SCROLLING_SPEED*dt) % BACKGROUND_LOOPING_POINT; 
 
     game_State_Machine:update(dt);
+
     love.keyboard.keysPressed = {};
 end
 

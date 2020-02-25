@@ -26,7 +26,7 @@ game_Fonts = {
     ['smallFont'] = love.graphics.newFont('assets/fonts/font.ttf', 8),
     ['mediumFont'] = love.graphics.newFont('assets/fonts/font.ttf', 16),
     ['largeFont'] = love.graphics.newFont('assets/fonts/font.ttf', 24),
-    ['hugeFont'] = love.graphics.newFont('assets/fonts/font.ttf', 30),
+    ['hugeFont'] = love.graphics.newFont('assets/fonts/font.ttf', 32),
 }
 
 -- TEXTURE
