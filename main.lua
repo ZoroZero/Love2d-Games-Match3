@@ -2,6 +2,8 @@ require 'src/Dependencies';
 
 -- LOAD FUNCTION
 function love.load()
+    -- Stress test
+    birdSprite = love.graphics.newImage('assets/graphics/bird.png');
 
     -- SET TEXTURE RENDER
     love.graphics.setDefaultFilter('nearest', 'nearest');
@@ -22,23 +24,40 @@ function love.load()
 
     -- SETUP GAME STATE MACHINE
     game_State_Machine = StateMachine{
-
+        ['start'] = function() return StartState() end
     };
+    game_State_Machine:change('start');
     -- SET UP KEY CHECK
     love.keyboard.keysPressed = {};
+
+    -- SET UP BACKGROUND x
+    background_x = 0;
 end
 
 
 -- UPDATE FUNCTION
 function love.update(dt)
+    -- UPDATE BACKGROUND
+    background_x = (background_x + BACKGROUND_SCROLLING_SPEED*dt) % BACKGROUND_LOOPING_POINT; 
 
+    game_State_Machine:update(dt);
     love.keyboard.keysPressed = {};
 end
 
 
 -- RENDER FUNCTION
-function love.render()
+function love.draw()
+    push:start()
 
+    -- draw background
+    love.graphics.draw(game_Textures['background'], -background_x, 0);
+
+    -- render state
+    game_State_Machine:render();
+
+    displayFPS()
+
+    push:finish()
 end
 
 
@@ -57,4 +76,11 @@ end
 -- CHECK KEY WAS PRESSED FUNCTION
 function love.keyboard.wasPressed(key)
     return love.keyboard.keysPressed[key];
+end
+
+-- DISPLAY FPS FUNCTION
+function displayFPS()
+    love.graphics.setFont(game_Fonts['smallFont']);
+    love.graphics.setColor(255, 255, 0, 255);
+    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10);
 end

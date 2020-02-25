@@ -6,6 +6,8 @@ WINDOW_HEIGHT = 720;
 VIRTUAL_WIDTH = 512;
 VIRTUAL_HEIGHT = 288;
 
+
+
 -- SOUND
 game_Sounds = {
     ['clock'] = love.audio.newSource('assets/sounds/clock.wav', 'static'),
@@ -28,7 +30,11 @@ game_Fonts = {
 }
 
 -- TEXTURE
-game_Texture = {
+game_Textures = {
     ['background'] = love.graphics.newImage('assets/graphics/background.png'),
     ['main'] = love.graphics.newImage('assets/graphics/match3.png')
 }
+
+-- BACKGROUND LOOPING POINT
+BACKGROUND_LOOPING_POINT = 1024/2;
+BACKGROUND_SCROLLING_SPEED = 30;
