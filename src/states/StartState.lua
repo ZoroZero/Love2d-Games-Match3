@@ -1,7 +1,12 @@
 StartState = Class{__includes = BaseState}
 
 local positions = {}
+-- Variable to keep track which option user choose
 local highlighted_Option = 1;
+
+-- Board x, y
+local board_X =  VIRTUAL_WIDTH/2 - TILE_WIDTH*4;
+local board_Y = VIRTUAL_HEIGHT/2 - TILE_HEIGHT*4;
 
 function StartState:init( )
     self.colors = {
@@ -31,25 +36,76 @@ function StartState:init( )
     end
     );
 
-    
+    -- Variable to keep the change of screen, when go to begin state -> 255
+    self.transition_opacity = 0;
+
+    -- check if we are in transition
+    self.is_Pause = false;
+
+    for i = 1, 64 do
+        table.insert( positions, game_Frames['tiles'][math.random(17)*6 + math.random(1,6)])
+    end
 end
 
 
 -- UPDATE FUNCTION
 function StartState:update(dt)
-    Timer.update(dt);
-    if love.keyboard.wasPressed('up') or love.keyboard.wasPressed('down') then
-        highlighted_Option = highlighted_Option == 1 and 2 or 1;
+    if not self.is_Pause then    
+        
+        -- CHECK CHANGE OPTIONS
+        if love.keyboard.wasPressed('up') or love.keyboard.wasPressed('down') then
+            highlighted_Option = highlighted_Option == 1 and 2 or 1;
+            game_Sounds['select']:play();
+        end
+
+        -- IF PRESSED ENTER CHECK
+        if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
+            game_Sounds['confirm']:play()
+
+            -- QUIT IF OPTION = 2
+            if highlighted_Option == 2 then
+                love.event.quit();
+            else
+                -- TRANSITION SCREEN
+                Timer.tween(1, {
+                    [self] = {transition_opacity = 1}}
+                ):finish(function() 
+                            game_State_Machine:change('begin_game', {
+                                level = 1
+                            });
+                            self.color_Timer:remove();
+                        end
+                )   
+            end
+
+            self.is_Pause = true;
+        end
     end
 
     if love.keyboard.wasPressed('escape') then
         love.event.quit();
-    end
+    end 
+        
+    -- Update timer
+    Timer.update(dt);
 end
 
 
 -- Render function
 function StartState:render()
+    -- Draw board
+    for y = 1,8 do
+        for x = 1, 8 do
+            love.graphics.setColor(0,0,0,255);
+            love.graphics.draw(game_Textures['main'], positions[x + (y - 1) * 8], 
+            board_X + (x - 1)* TILE_WIDTH, board_Y + (y-1) * TILE_HEIGHT);
+
+            love.graphics.setColor(255,255,255,255);
+            love.graphics.draw(game_Textures['main'], positions[x + (y - 1) * 8], 
+            board_X + (x - 1)* TILE_WIDTH, board_Y + (y - 1) * TILE_HEIGHT);
+        end
+    end
+
     --  Draw rectangle to shadow the background
     love.graphics.setColor(0, 0, 0, 1/2)
     love.graphics.rectangle('fill', 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
@@ -59,6 +115,10 @@ function StartState:render()
 
     -- DRAW MENU OPTIONS
     self:drawMenuOption(VIRTUAL_HEIGHT/2 + 15);
+
+    -- DRAW TRANSITION SCREEN
+    love.graphics.setColor(1, 1, 1, self.transition_opacity);
+    love.graphics.rectangle('fill', 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 end
 
 -- DRAW TITLE
@@ -80,8 +140,10 @@ end
 function StartState:drawMenuOption(y)
     love.graphics.setFont(game_Fonts['mediumFont']);
     love.graphics.setColor(1, 1, 1, 1/2)
+    -- RECTANGLE CONTAIN OPTIONS
     love.graphics.rectangle('fill', VIRTUAL_WIDTH/2 - 80, y, 160, 58, 6)
 
+    -- START OPTION
     drawShadowText("Start", y + 8);
     if highlighted_Option == 1 then 
         love.graphics.setColor(99/255, 155/255, 1, 255);
@@ -90,6 +152,7 @@ function StartState:drawMenuOption(y)
     end
     love.graphics.printf("Start", 0, y + 8, VIRTUAL_WIDTH, 'center');
 
+    -- QUIT GAME OPTION
     drawShadowText("Quit game", y + 31);
     if highlighted_Option == 2 then 
         love.graphics.setColor(99/255, 155/255, 1, 255);

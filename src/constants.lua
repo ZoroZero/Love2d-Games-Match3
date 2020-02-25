@@ -1,3 +1,5 @@
+require 'src/Ultil'
+
 -- WINDOW DIMENSIONS
 WINDOW_WIDTH = 1280;
 WINDOW_HEIGHT = 720;
@@ -6,10 +8,9 @@ WINDOW_HEIGHT = 720;
 VIRTUAL_WIDTH = 512;
 VIRTUAL_HEIGHT = 288;
 
-
-
 -- SOUND
 game_Sounds = {
+    ['confirm'] = love.audio.newSource('assets/sounds/confirm.wav', 'static'),
     ['clock'] = love.audio.newSource('assets/sounds/clock.wav', 'static'),
     ['error'] = love.audio.newSource('assets/sounds/error.wav', 'static'),
     ['game-over'] = love.audio.newSource('assets/sounds/game-over.wav', 'static'),
@@ -35,6 +36,17 @@ game_Textures = {
     ['main'] = love.graphics.newImage('assets/graphics/match3.png')
 }
 
+
 -- BACKGROUND LOOPING POINT
 BACKGROUND_LOOPING_POINT = 1024/2;
 BACKGROUND_SCROLLING_SPEED = 30;
+
+-- TILE DIMENSIONS
+TILE_WIDTH = 32;
+TILE_HEIGHT = 32;
+
+
+-- GAME FRAMES
+game_Frames = {
+    ['tiles'] = generateQuad(game_Textures['main'], TILE_WIDTH, TILE_HEIGHT)
+}
