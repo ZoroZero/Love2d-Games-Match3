@@ -37,9 +37,19 @@ function PlayState:update(dt)
             self.highlighted = true;
             self.highlighted_Tile = self.board.tiles[self.highlighting_Y][self.highlighting_X]
         else
-            self:swapTile();
-            self.highlighted = false;
-            self.highlighted_Tile = nil;
+            if self.highlighted_Tile.grid_X == self.highlighting_X and self.highlighted_Tile.grid_Y == self.highlighting_Y then
+                self.highlighted = false;
+                self.highlighted_Tile = nil;
+            elseif not (math.abs(self.highlighted_Tile.grid_X - self.highlighting_X) 
+                    + math.abs(self.highlighted_Tile.grid_Y - self.highlighting_Y)  == 1) then 
+                game_Sounds['error']:play();
+                self.highlighted = false;
+                self.highlighted_Tile = nil;
+            else
+                self:swapTile();
+                self.highlighted = false;
+                self.highlighted_Tile = nil;
+            end
         end
     end
 
@@ -70,8 +80,22 @@ function PlayState:swapTile()
     Timer.tween(0.1, {
         [self.highlighted_Tile] = {x = newTile.x, y = newTile.y},
         [newTile] = {x = self.highlighted_Tile.x, y = self.highlighted_Tile.y}
-    })   
+    }):finish(function()
+        self:updateBoard()
+    end)
 end
+
+
+-- UPDATE BOARD FUNCTION AFTER MATCH
+function PlayState:updateBoard()
+    
+    self.board:removeMatch();
+
+    local tile_Action = self.board:getFallingTiles()
+
+    Timer.tween(0.5, tile_Action)
+end
+
 
 -- RENDER FUNCTION
 function PlayState:render()
@@ -88,4 +112,16 @@ function PlayState:render()
         love.graphics.rectangle('fill', (self.highlighted_Tile.grid_X - 1) * TILE_WIDTH + self.board.x, 
         (self.highlighted_Tile.grid_Y - 1)* TILE_HEIGHT + self.board.y, TILE_WIDTH, TILE_HEIGHT, 4)
     end
+
+    -- DRAW MENU TABLE
+    love.graphics.setColor(56/255, 56/255,56/255, 0.9)
+    love.graphics.rectangle('fill', 10, 15, 200, 120);
+
+    -- DRAW GUI TEXT
+    love.graphics.setColor(56/255, 155/255, 1, 1);
+    love.graphics.setFont(game_Fonts['mediumFont']);
+    love.graphics.printf("Level: " .. tostring(self.level), 10, 23, 200, 'center');
+    love.graphics.printf("Score: " .. tostring(self.level), 10, 53, 200, 'center');
+    love.graphics.printf("Goal: " .. tostring(self.level), 10, 83, 200, 'center');
+    love.graphics.printf("Timer: " .. tostring(self.level), 10, 113, 200, 'center');
 end
