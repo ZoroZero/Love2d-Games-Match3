@@ -48,5 +48,5 @@ TILE_HEIGHT = 32;
 
 -- GAME FRAMES
 game_Frames = {
-    ['tiles'] = generateQuad(game_Textures['main'], TILE_WIDTH, TILE_HEIGHT)
+    ['tiles'] = generateTiles(game_Textures['main'])
 }

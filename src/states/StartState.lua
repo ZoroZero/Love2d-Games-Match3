@@ -43,9 +43,10 @@ function StartState:init( )
     self.is_Pause = false;
 
     for i = 1, 64 do
-        table.insert( positions, game_Frames['tiles'][math.random(17)*6 + math.random(1,6)])
+        table.insert( positions, game_Frames['tiles'][math.random( 1, 18)][math.random(1,6)])
     end
 end
+
 
 
 -- UPDATE FUNCTION
@@ -95,11 +96,14 @@ end
 function StartState:render()
     -- Draw board
     for y = 1,8 do
-        for x = 1, 8 do
+       
+        for x = 1, 8 do 
+            -- Draw shadow
             love.graphics.setColor(0,0,0,255);
             love.graphics.draw(game_Textures['main'], positions[x + (y - 1) * 8], 
-            board_X + (x - 1)* TILE_WIDTH, board_Y + (y-1) * TILE_HEIGHT);
+            board_X + (x - 1)* TILE_WIDTH  + 3, board_Y + (y-1) * TILE_HEIGHT + 3);
 
+            -- Draw tiles
             love.graphics.setColor(255,255,255,255);
             love.graphics.draw(game_Textures['main'], positions[x + (y - 1) * 8], 
             board_X + (x - 1)* TILE_WIDTH, board_Y + (y - 1) * TILE_HEIGHT);

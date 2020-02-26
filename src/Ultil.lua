@@ -31,71 +31,29 @@ function table.slice(tbl, start, stop, step)
 end
 
 
--- FUNCTION TO GET PADDLE SPRITES
-function generatePaddles(atlas)
-    local y = 64;
-    local x = 0;
-    local counter = 1;
+-- GENERATE TILE TABLE
+function generateTiles(atlas)
+    local tiles = {}
+    local sheet_width = 6;
+    local sheet_height = 9;
+    
+    local color_counter = 1;
+    
+    for y = 1, sheet_height do
+        local sprite_x = 0;
+        for i = 1, 2 do 
+            tiles[color_counter] = {}
+            
+            for x = 1, sheet_width do
+                table.insert( tiles[color_counter], love.graphics.newQuad(sprite_x , (y - 1)* TILE_HEIGHT, 
+                                                    TILE_WIDTH, TILE_HEIGHT, 
+                                                    atlas:getDimensions()) );
+                sprite_x = sprite_x + 32;
+            end
 
-    local quads = {}
-
-    for i = 1, NUM_OF_PADDLE do 
-        -- small paddle
-        quads[counter] = love.graphics.newQuad(x, y, 
-                                        SMALL_PADDLE_WIDTH, PADDLE_HEIGHT, atlas:getDimensions());
-        counter = counter + 1;
-
-        -- medium paddle
-        quads[counter] = love.graphics.newQuad(x + SMALL_PADDLE_WIDTH, y, 
-                                        MEDIUM_PADDLE_WIDTH, PADDLE_HEIGHT, atlas:getDimensions());
-        counter = counter + 1;
-
-        -- large paddle
-        quads[counter] = love.graphics.newQuad(x + SMALL_PADDLE_WIDTH + MEDIUM_PADDLE_WIDTH, y, 
-                                        LARGE_PADDLE_WIDTH, PADDLE_HEIGHT, atlas:getDimensions());
-        counter = counter + 1;
-
-        -- mega paddle
-        quads[counter] = love.graphics.newQuad(x, y + PADDLE_HEIGHT,
-                                        MEGA_PADDLE_WIDTH, PADDLE_HEIGHT, atlas:getDimensions());
-        counter = counter + 1;
-
-        y  = y + PADDLE_HEIGHT * 2;
-    end
-    return quads;
-end
-
-
--- FUNCTION TO CROP THE BALLS AND RETURN THEM
-function generateBalls(atlas)
-    local quad = {}
-    local counter = 1;
-
-    local x = 3 * SMALL_PADDLE_WIDTH;
-    local y = 3 * PADDLE_HEIGHT;
-
-    -- Gets balls on the first row
-    for i = 0, 3 do
-        quad[counter] = love.graphics.newQuad(x + i*BALL_WIDTH, y, BALL_WIDTH, BALL_HEIGHT, atlas:getDimensions());
-        counter = counter + 1;
+            color_counter = color_counter + 1;
+        end
     end
 
-    -- Gets balls on the second row
-    for i = 0, 2 do
-        quad[counter] = love.graphics.newQuad(x + i*BALL_WIDTH, y + BALL_HEIGHT, BALL_WIDTH, BALL_HEIGHT, atlas:getDimensions());
-        counter = counter + 1;
-    end
-
-    return quad;
-end
-
-
--- CROP BRICKS FROM SPRITE SHEET
-function generateBricks(atlas)
-    return table.slice(generateQuad(atlas, BRICK_WIDTH, BRICK_HEIGHT), 1, 21, 1);
-end
-
--- CROP HEARTS
-function generateHearts(atlas)
-    return generateQuad(atlas, HEART_WIDTH, HEART_HEIGHT)
+    return tiles;
 end
