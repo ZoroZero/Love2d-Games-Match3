@@ -72,7 +72,8 @@ function StartState:update(dt)
                     [self] = {transition_opacity = 1}}
                 ):finish(function() 
                             game_State_Machine:change('begin_game', {
-                                level = 1
+                                level = 1,
+                                score = 0,
                             });
                             self.color_Timer:remove();
                         end

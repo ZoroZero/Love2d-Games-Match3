@@ -11,8 +11,9 @@ end
 
 -- ENTER FUNCTION
 function BeginGameState:enter( params )
-
+    -- Initialize all enter params
     self.level = params.level;
+    self.score = params.score;
 
     -- TRANSITION BACK TO NORMAL
     Timer.tween(1, {
@@ -33,7 +34,9 @@ function BeginGameState:enter( params )
                                 :finish(function()
                                     game_State_Machine:change('play', {
                                         level = self.level,
-                                        board = self.board
+                                        board = self.board,
+                                        score = self.score,
+                                        timer = 60,
                                     })
                                     end)
                                 end)

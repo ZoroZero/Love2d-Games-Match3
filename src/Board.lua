@@ -135,12 +135,12 @@ function Board:findMatch()
 
     self.match = matches;
 
-    return #self.match > 0 and true or false;   
+    return #self.match > 0 and self.match or false;   
 end
 
 -- REMOVE EMPTY TILE
 function Board:removeMatch()
-    if self:findMatch() then
+    if self.match then
         for k, matches in pairs(self.match) do 
             for k, tile in pairs(matches) do 
                 self.tiles[tile.grid_Y][tile.grid_X] = nil;
