@@ -26,7 +26,7 @@ function PlayState:enter(params)
     self.board = params.board;
     self.timer = params.timer;
     self.score = params.score;
-    self.goal = self.level * 1000;
+    self.goal = self.level * 500;
 end
 
 -- UPDATE FUNCTION
@@ -165,6 +165,7 @@ function PlayState:updateBoard()
             game_Sounds['match']:play()
             -- Increase score
             self.score = self.score + #matches * 25;
+            self.countdown = math.max(0, self.countdown - #matches);
         end
         
         -- Remove match tile

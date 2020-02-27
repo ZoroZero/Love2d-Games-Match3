@@ -1,12 +1,14 @@
 Board = Class{}
 
 -- INIT FUNCTION
-function Board:init( x, y )
+function Board:init( x, y ,level)
     self.x = x;
     self.y = y;
 
     self.match = {};
+    self.level = level;
     self:initialized_Tiles();
+    
 end
 
 
@@ -16,7 +18,7 @@ function Board:initialized_Tiles()
     for y = 1, 8 do 
         table.insert(self.tiles, {})
         for x = 1, 8 do 
-            table.insert(self.tiles[y], Tile(x, y, math.random(1,18), math.random(1, 6)));
+            table.insert(self.tiles[y], Tile(x, y, math.random(1,18), math.random(self.level)));
         end
     end
 
@@ -215,7 +217,7 @@ function Board:getFallingTiles()
             local tile = self.tiles[y][x];
 
             if tile == nil then 
-                local new_Tile = Tile(x, y, math.random(1,18), math.random(1,6))
+                local new_Tile = Tile(x, y, math.random(1,18), math.random(self.level))
                 new_Tile.y = -32;
                 self.tiles[y][x] = new_Tile;
 

@@ -2,8 +2,6 @@ BeginGameState = Class{__includes = BaseState}
 
 -- INIT FUNCTION
 function BeginGameState:init()
-    self.board = Board(VIRTUAL_WIDTH - 272, 16);
-
     self.levelLabel_y = -64;
 
     self.transition_opacity = 1;
@@ -14,7 +12,7 @@ function BeginGameState:enter( params )
     -- Initialize all enter params
     self.level = params.level;
     self.score = params.score;
-
+    self.board = Board(VIRTUAL_WIDTH - 272, 16, self.level);
     -- TRANSITION BACK TO NORMAL
     Timer.tween(1, {
         [self] = {transition_opacity= 0}
