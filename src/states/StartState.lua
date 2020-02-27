@@ -45,6 +45,10 @@ function StartState:init( )
     for i = 1, 64 do
         table.insert( positions, game_Frames['tiles'][math.random( 1, 18)][math.random(1,6)])
     end
+
+
+    game_Sounds['music']:play();
+    game_Sounds['music']:setLooping(true);
 end
 
 
@@ -75,6 +79,7 @@ function StartState:update(dt)
                                 level = 1,
                                 score = 0,
                             });
+                            game_Sounds['music']:stop();
                             self.color_Timer:remove();
                         end
                 )   

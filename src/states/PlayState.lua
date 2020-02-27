@@ -25,18 +25,31 @@ function PlayState:enter(params)
     self.level = params.level;
     self.board = params.board;
     self.timer = params.timer;
-    self.score = params.score;
+    self.score = params.score + 400;
     self.goal = self.level * 500;
+
+    game_Sounds['music2']:play();
+    game_Sounds['music2']:setLooping(true);
+
 end
 
 -- UPDATE FUNCTION
 function PlayState:update(dt)
+    -- If less than 5s
+    if self.timer - self.countdown <= 5 then 
+        game_Sounds['clock']:play()
+    end
+
     -- If out of time
     if self.timer - self.countdown <= 0 then
-        Timer.clear()
-        game_Sounds['game-over']:play()
+        Timer.clear();
+        game_Sounds['game-over']:play();
+        game_Sounds['music2']:stop();
         game_State_Machine:change('game_over', {score = self.score});
+    
+    -- If pass goal score
     elseif self.score >= self.goal then
+        game_Sounds['next-level']:play();
         game_State_Machine:change('begin_game', {
                                                 level = self.level + 1,
                                                 score = self.score})
@@ -223,6 +236,7 @@ function PlayState:render()
     self.board:render();
 
     -- DRAW HIGHLIGHTING TILE
+    love.graphics.setLineWidth(4)
     love.graphics.setColor(1,0,0,1);
     love.graphics.rectangle('line', (self.highlighting_X - 1) * TILE_WIDTH + self.board.x, 
     (self.highlighting_Y - 1)* TILE_HEIGHT + self.board.y, TILE_WIDTH, TILE_HEIGHT, 4)

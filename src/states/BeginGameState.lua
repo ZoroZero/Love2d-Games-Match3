@@ -13,6 +13,7 @@ function BeginGameState:enter( params )
     self.level = params.level;
     self.score = params.score;
     self.board = Board(VIRTUAL_WIDTH - 272, 16, self.level);
+
     -- TRANSITION BACK TO NORMAL
     Timer.tween(1, {
         [self] = {transition_opacity= 0}

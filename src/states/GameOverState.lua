@@ -3,6 +3,9 @@ GameOverState = Class {__includes = BaseState}
 -- enter function
 function GameOverState:enter(params)
     self.score = params.score;
+
+    game_Sounds['music3']:play();
+    game_Sounds['music3']:setLooping(true);
 end
 
 -- UPDATE FUNCTION
@@ -13,6 +16,7 @@ function GameOverState:update(dt)
 
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
         game_Sounds['confirm']:play();
+        game_Sounds['music3']:stop()
         game_State_Machine:change('start');
     end
 end
