@@ -139,14 +139,49 @@ function PlayState:swapTile()
     self.board.tiles[newTile.grid_Y][newTile.grid_X] = newTile;
 
     -- -- tween coordinates between the two so they swap
-    Timer.tween(0.1, {
+    Timer.tween(0.15, {
         [self.highlighted_Tile] = {x = newTile.x, y = newTile.y},
         [newTile] = {x = self.highlighted_Tile.x, y = self.highlighted_Tile.y}
     }):finish(function()
-        self:updateBoard()
+        self.highlighting_X = newTile.grid_X;
+        self.highlighting_Y = newTile.grid_Y;
+        self:checkReswap();
     end)
 end
 
+
+-- CHECK IF NEED TO SWAP AGAIN
+function PlayState:checkReswap()
+    local match = self.board:findMatch();
+    if match then 
+        self:updateBoard()
+    else 
+        local tempX = self.highlighted_Tile.grid_X;
+        local tempY = self.highlighted_Tile.grid_Y;
+
+        local newTile = self.board.tiles[self.highlighting_Y][self.highlighting_X];
+
+        self.highlighted_Tile.grid_X = newTile.grid_X;
+        self.highlighted_Tile.grid_Y = newTile.grid_Y;
+        newTile.grid_X = tempX;
+        newTile.grid_Y = tempY;
+
+        -- swap tiles in the tiles table
+        self.board.tiles[self.highlighted_Tile.grid_Y][self.highlighted_Tile.grid_X] = self.highlighted_Tile;
+
+        self.board.tiles[newTile.grid_Y][newTile.grid_X] = newTile;
+
+        -- -- tween coordinates between the two so they swap
+        Timer.tween(0.15, {
+            [self.highlighted_Tile] = {x = newTile.x, y = newTile.y},
+            [newTile] = {x = self.highlighted_Tile.x, y = self.highlighted_Tile.y}
+        })
+
+        self.highlighted = false;
+        self.highlighted_Tile = nil;
+        self.user_Input = true;
+    end
+end
 
 -- UPDATE BOARD FUNCTION AFTER MATCH
 function PlayState:updateBoard()
