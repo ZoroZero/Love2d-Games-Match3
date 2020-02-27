@@ -19,6 +19,10 @@ function Board:initialized_Tiles()
             table.insert(self.tiles[y], Tile(x, y, math.random(1,18), math.random(1, 6)));
         end
     end
+
+    if self:findMatch() then 
+        self:initialized_Tiles()
+    end
 end
 
 

@@ -36,6 +36,9 @@ function love.load()
     -- SET UP KEY CHECK
     love.keyboard.keysPressed = {};
 
+    -- SET UP MOUSE CHECK
+    love.mouse.mousePressed = {};
+
     -- SET UP BACKGROUND x
     background_x = 0;
 end
@@ -48,7 +51,10 @@ function love.update(dt)
 
     game_State_Machine:update(dt);
 
+    -- RESET KEY AND MOUSE CHECK
     love.keyboard.keysPressed = {};
+
+    love.mouse.mousePressed = {};
 end
 
 
@@ -90,4 +96,15 @@ function displayFPS()
     love.graphics.setFont(game_Fonts['smallFont']);
     love.graphics.setColor(255, 255, 0, 255);
     love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10);
+end
+
+
+-- GET MOUSE CLICK AND COORDINATE
+function love.mousepressed(x, y, button, isTouch)
+    love.mouse.mousePressed[button] = true
+end
+
+-- CHECK IF MOUSE BUTTON WAS PRESSED
+function love.mouse.wasPressed(key)
+    return love.mouse.mousePressed[key]
 end

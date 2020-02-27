@@ -56,19 +56,54 @@ function PlayState:update(dt)
             self.highlighting_Y = self.highlighting_Y == #self.board.tiles[1] and 1 or self.highlighting_Y + 1;
         end
 
-        if love.keyboard.wasPressed('return') or love.keyboard.wasPressed('enter') then
+        if love.mouse.wasPressed(1) then 
+            self.highlighting_X = math.floor((love.mouse.getX()/WINDOW_WIDTH * VIRTUAL_WIDTH - self.board.x)/32) + 1;
+            self.highlighting_Y =  math.floor((love.mouse.getY()/ WINDOW_HEIGHT * VIRTUAL_HEIGHT - self.board.y)/32) + 1;
+
             if not self.highlighted then 
                 self.highlighted = true;
-                self.highlighted_Tile = self.board.tiles[self.highlighting_Y][self.highlighting_X]
+                self.highlighted_Tile = self.board.tiles[self.highlighting_Y][self.highlighting_X];
             else
+                -- If highlighting tile is already highlighted
                 if self.highlighted_Tile.grid_X == self.highlighting_X and self.highlighted_Tile.grid_Y == self.highlighting_Y then
                     self.highlighted = false;
                     self.highlighted_Tile = nil;
+
+                -- If not neighbor tile
                 elseif not (math.abs(self.highlighted_Tile.grid_X - self.highlighting_X) 
                         + math.abs(self.highlighted_Tile.grid_Y - self.highlighting_Y)  == 1) then 
                     game_Sounds['error']:play();
                     self.highlighted = false;
                     self.highlighted_Tile = nil;
+
+                -- If satisfy all then swap them
+                else
+                    self:swapTile();
+                end
+            end
+        end
+
+        if love.keyboard.wasPressed('return') or love.keyboard.wasPressed('enter') then
+            -- If no tile is highlighted
+            if not self.highlighted then 
+                self.highlighted = true;
+                self.highlighted_Tile = self.board.tiles[self.highlighting_Y][self.highlighting_X]
+
+            
+            else
+                -- If highlighting tile is already highlighted
+                if self.highlighted_Tile.grid_X == self.highlighting_X and self.highlighted_Tile.grid_Y == self.highlighting_Y then
+                    self.highlighted = false;
+                    self.highlighted_Tile = nil;
+
+                -- If not neighbor tile
+                elseif not (math.abs(self.highlighted_Tile.grid_X - self.highlighting_X) 
+                        + math.abs(self.highlighted_Tile.grid_Y - self.highlighting_Y)  == 1) then 
+                    game_Sounds['error']:play();
+                    self.highlighted = false;
+                    self.highlighted_Tile = nil;
+
+                -- If satisfy all then swap them
                 else
                     self:swapTile();
                 end
@@ -86,6 +121,8 @@ end
 
 -- SWAP 2 TILE FUNCTION
 function PlayState:swapTile()
+    self.user_Input = false;
+
     local tempX = self.highlighted_Tile.grid_X;
     local tempY = self.highlighted_Tile.grid_Y;
 
@@ -113,7 +150,7 @@ end
 
 -- UPDATE BOARD FUNCTION AFTER MATCH
 function PlayState:updateBoard()
-    -- reset highligh
+    -- reset highlight
     self.highlighted = false;
     self.highlighted_Tile = nil;
 
@@ -139,6 +176,8 @@ function PlayState:updateBoard()
                                     :finish(function()
                                         self:updateBoard();    
                                     end)
+    else
+        self.user_Input = true;
     end
 end
 

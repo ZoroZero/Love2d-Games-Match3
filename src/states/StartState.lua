@@ -82,6 +82,20 @@ function StartState:update(dt)
 
             self.is_Pause = true;
         end
+
+        -- if love.mouse.wasPressed(1) then 
+        --     Timer.tween(1, {
+        --         [self] = {transition_opacity = 1}}
+        --     ):finish(function() 
+        --                 game_State_Machine:change('begin_game', {
+        --                     level = 1,
+        --                     score = 0,
+        --                 });
+        --                 self.color_Timer:remove();
+        --             end
+        --     )   
+        --     self.is_Pause = true;
+        -- end
     end
 
     if love.keyboard.wasPressed('escape') then
